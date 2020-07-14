@@ -2,7 +2,7 @@
 #
 # cilium-envoy from github.com/cilium/proxy
 #
-FROM quay.io/cilium/cilium-envoy:ccad480c59aa8b946d98aaf79f8e9e38d6731fdc@sha256:215442a52fcd1022a97d7eae658c503ec693194a6f09f3488b8a360e509d5945 as cilium-envoy
+FROM quay.io/cilium/cilium-envoy:808d3cfb495919df7679f929a251bc104552499c@sha256:804d98ea453e3e34483a6043118c25edaa7b48ba3e35891a4e720ae0b699b7d0 as cilium-envoy
 ARG CILIUM_SHA=""
 LABEL cilium-sha=${CILIUM_SHA}
 
