@@ -83,7 +83,7 @@ func (e *Endpoint) getNamedPortEgress(npMap policy.NamedPortMultiMap, name strin
 	port, err := npMap.GetNamedPort(name, proto)
 	// Skip logging for ErrUnknownNamedPort on egress, as the destination POD with the port name
 	// is likely not scheduled yet.
-	if err != nil && err != policy.ErrUnknownNamedPort {
+	if err != nil && err != policy.ErrUnknownNamedPort && e.logLimiter.Allow() {
 		e.getLogger().WithFields(logrus.Fields{
 			logfields.PortName:         name,
 			logfields.Protocol:         u8proto.U8proto(proto).String(),
