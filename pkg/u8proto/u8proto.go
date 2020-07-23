@@ -62,5 +62,5 @@ func ParseProtocol(proto string) (U8proto, error) {
 	if u, ok := ProtoIDs[strings.ToLower(proto)]; ok {
 		return u, nil
 	}
-	return 0, fmt.Errorf("unknown protocol '%s'", proto)
+	return 0, fmt.Errorf("unknown protocol %q", proto)
 }

@@ -475,13 +475,6 @@ func (a *L3n4Addr) DeepCopy() *L3n4Addr {
 
 // Hash calculates L3n4Addr's internal SHA256Sum.
 func (a L3n4Addr) Hash() string {
-	// FIXME: Remove Protocol's omission once we care about protocols.
-	protoBak := a.Protocol
-	a.Protocol = ""
-	defer func() {
-		a.Protocol = protoBak
-	}()
-
 	str := []byte(fmt.Sprintf("%+v", a))
 	return fmt.Sprintf("%x", sha512.Sum512_256(str))
 }

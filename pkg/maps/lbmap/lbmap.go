@@ -47,7 +47,7 @@ type LBBPFMap struct{}
 // The given prevBackendCount denotes a previous service backend entries count,
 // so that the function can remove obsolete ones.
 func (*LBBPFMap) UpsertService(
-	svcID uint16, svcIP net.IP, svcPort uint16,
+	svcID uint16, svcIP net.IP, svcPort uint16, svcProto string,
 	backendIDs []uint16, prevBackendCount int,
 	ipv6 bool, svcType loadbalancer.SVCType, svcLocal bool,
 	svcScope uint8, sessionAffinity bool,
@@ -58,10 +58,15 @@ func (*LBBPFMap) UpsertService(
 		return fmt.Errorf("Invalid svc ID 0")
 	}
 
+	proto, err := u8proto.ParseProtocol(svcProto)
+	if err != nil {
+		return err
+	}
 	if ipv6 {
-		svcKey = NewService6Key(svcIP, svcPort, u8proto.ANY, svcScope, 0)
+
+		svcKey = NewService6Key(svcIP, svcPort, proto, svcScope, 0)
 	} else {
-		svcKey = NewService4Key(svcIP, svcPort, u8proto.ANY, svcScope, 0)
+		svcKey = NewService4Key(svcIP, svcPort, proto, svcScope, 0)
 	}
 
 	slot := 1
@@ -118,12 +123,15 @@ func (*LBBPFMap) DeleteService(svc loadbalancer.L3n4AddrID, backendCount int) er
 	if svc.ID == 0 {
 		return fmt.Errorf("Invalid svc ID 0")
 	}
-
+	proto, err := u8proto.ParseProtocol(string(svc.Protocol))
+	if err != nil {
+		return err
+	}
 	if svc.IsIPv6() {
-		svcKey = NewService6Key(svc.IP, svc.Port, u8proto.ANY, svc.Scope, 0)
+		svcKey = NewService6Key(svc.IP, svc.Port, proto, svc.Scope, 0)
 		revNATKey = NewRevNat6Key(uint16(svc.ID))
 	} else {
-		svcKey = NewService4Key(svc.IP, svc.Port, u8proto.ANY, svc.Scope, 0)
+		svcKey = NewService4Key(svc.IP, svc.Port, proto, svc.Scope, 0)
 		revNATKey = NewRevNat4Key(uint16(svc.ID))
 	}
 
