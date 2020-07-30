@@ -309,6 +309,9 @@ func (d *Daemon) regenerateRestoredEndpoints(state *endpointRestoreState) (resto
 
 	var endpointCleanupCompleted sync.WaitGroup
 	for _, ep := range state.toClean {
+		// Remove restored rules of cleaned endpoint
+		proxy.DefaultDNSProxy.RemoveRestoredRules(ep.ID)
+
 		endpointCleanupCompleted.Add(1)
 		go func(ep *endpoint.Endpoint) {
 			// The IP was not allocated yet so does not need to be free.
